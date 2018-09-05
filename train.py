@@ -43,7 +43,7 @@ def accuracy(logit_1, logit_2, logit_3, logit_4, logit_5, y_):
 def train(reuse, batch_size=64, number_of_iterations=100000):
     """Trains CNN."""
     x_train, y_train, x_test, y_test = load_data()
-    print "Data uploaded!"
+    print("Data uploaded!")
     
     model = Model()
     with tf.Session(graph=model.graph) as session:
@@ -66,8 +66,8 @@ def train(reuse, batch_size=64, number_of_iterations=100000):
                                                                     model.logits_4, model.logits_5, model.y],
                                                                     feed_dict={model.x: bat_x, model.y: bat_y,
                                                                                model.keep_prob: 1.0})
-                print "Iteration number: {}".format(i)
-                print "Batch accuracy: {},  Loss: {}".format(accuracy(log_1, log_2, log_3, log_4, log_5, y_), l)
+                print("Iteration number: {}".format(i))
+                print("Batch accuracy: {},  Loss: {}".format(accuracy(log_1, log_2, log_3, log_4, log_5, y_), l))
 
         # Evaluate accuracy by parts, if you use GPU and it has low memory.
         # For example, I have 2 GB GPU memory and I need to feed test data by parts(six times by 2178 examples)
@@ -82,7 +82,7 @@ def train(reuse, batch_size=64, number_of_iterations=100000):
             # Combine accuracy
             z += accuracy(log_1, log_2, log_3, log_4, log_5, y_)
             
-        print "Test accuracy: {}".format((z/6.0))    
+        print("Test accuracy: {}".format((z/6.0)))
 
         # Save model in file "try1.ckpt"
         model.saver.save(session, "./try1.ckpt")    

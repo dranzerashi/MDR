@@ -15,9 +15,9 @@ def download_data(filename, url=URL, data_path=DATA_PATH):
     tgz.close()
 
 # Download data
-print 'Downloading data...'
+print('Downloading data...')
 
 download_data("test.tar.gz")
 download_data("train.tar.gz")
 
-print 'Data was successfully downloaded and extracted!'
+print('Data was successfully downloaded and extracted!')

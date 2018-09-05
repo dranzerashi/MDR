@@ -12,37 +12,46 @@ class Model(object):
     """
     def __init__(self, keep_prob):
         self.keep_prob = keep_prob
-        self.model = Sequential()
-        model = self.model
-
+        self.build_model()
+    
+    def build_model():
+        input = Input(shape=(196,160,))
         # First convolutional layer
         # 16 filters - size(5x5x3)
-        model.add(Conv2D(filters=16, kernel_size=5, strides=(1, 1), padding='same'))
-        model.add(Activation('relu'))
+        x = Conv2D(filters=16, kernel_size=5, strides=(1, 1), padding='same')(input)
+        x = Activation('relu')(x)
         #skipping local response normalization
-        model.add(Dropout(self.keep_prob))
+        x = (Dropout(self.keep_prob)(x)
         
         # Second convolutional layer
         # 32 filters - size(5x5x16)
-        model.add(Conv2D(filters=32,kernel_size=5, strides=(1, 1), padding='same'))
-        model.add(Activation('relu'))
+        x = Conv2D(filters=32, kernel_size=5, strides=(1, 1), padding='same')(x)
+        x = Activation('relu')(x)
         #skipping local response normalization
-        model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2), padding='same'))
-        model.add(Dropout(self.keep_prob))
+        x = MaxPool2D(pool_size=(2, 2), strides=(2, 2), padding='same')(x)
+        x = Dropout(self.keep_prob)(x)
 
         # Third convolutional layer
         # 64 filters - size(5x5x32)
-        model.add(Conv2D(filters=64,kernel_size=5, strides=(1, 1), padding='same'))
-        model.add(Activation('relu'))
+        x = Conv2D(filters=64, kernel_size=5, strides=(1, 1), padding='same')(x)
+        x = Activation('relu')(x)
         #skipping local response normalization
-        model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2), padding='same'))
+        x = MaxPool2D(pool_size=(2, 2), strides=(2, 2), padding='same')(x)
         
         # Reshape tensor from POOL layer for connection with FC
-        model.add(Flatten())
-        model.add(Dropout(self.keep_prob))
+        x = Flatten()(x)
+        x = Dropout(self.keep_prob)(x)
 
         # Fully connected layer
-        model(Dense(1024, activation='relu'))
-        model.add(Dropout(self.keep_prob))
+        x = Dense(1024, activation='relu')(x)
+        x = Dropout(self.keep_prob)(x)
 
         # Create variables for 5 softmax classifiers
+        d1 = Dense(11, activation='relu')(x)
+        d2 = Dense(11, activation='relu')(x)
+        d3 = Dense(11, activation='relu')(x)
+        d4 = Dense(11, activation='relu')(x)
+
+        self.model = Model(inputs=input, outputs=[d1, d2, d3, d4])
+
+

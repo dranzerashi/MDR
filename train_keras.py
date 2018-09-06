@@ -36,7 +36,7 @@ def accuracy(logit_1, logit_2, logit_3, logit_4):
     return (np.mean(correct_prediction))*100.0        
 
 
-def train(reuse, batch_size=64, nb_epoch=100000):
+def train(reuse, batch_size=256, nb_epoch=100000):
     """Trains CNN."""
     samples = glob("./data/train/*.png")
     
@@ -49,7 +49,7 @@ def train(reuse, batch_size=64, nb_epoch=100000):
     
     print("Data uploaded!")
     model = MDRModel(0.5)
-    model.model.fit_generator(train_generator, samples_per_epoch=len(training_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=50)
+    model.model.fit_generator(train_generator, steps_per_epoch=len(training_samples)/batch_size, validation_data=validation_generator, nb_val_samples=len(validation_samples)/batch_size, epochs=500)
 
     #history = model.model.fit(x_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(x_test, y_test))
 

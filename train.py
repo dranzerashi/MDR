@@ -17,6 +17,7 @@ def predictions(logit_1, logit_2, logit_3, logit_4, logit_5):
     """Converts predictions into understandable format.
     For example correct prediction for 2 will be > [2,10,10,10,10]
     """
+    print(logit_1)
     first_digits = np.argmax(logit_1, axis=1)
     second_digits = np.argmax(logit_2, axis=1)
     third_digits = np.argmax(logit_3, axis=1)

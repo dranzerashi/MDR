@@ -106,7 +106,7 @@ def get_y1(path):
     count = 0    
     list_of_image_names = get_list_of_image(path)
     y = np.empty((len(dict_csv), 6), dtype=int)
-    for image_name in list_of_image_names:
+    for image_name in list_of_image_names[:100]:
         digits = np.array(dict_csv[image_name]["DigitLabel"])
         number_of_digits = len(digits)
         if number_of_digits > 5:

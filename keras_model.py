@@ -1,28 +1,29 @@
 import numpy as np
 import scipy
 import tensorflow as tf
-from keras.models import Sequential
+from keras.models import Model
 from keras.layers import Dense, Activation, Conv2D, Dropout, MaxPool2D, Flatten, Input
+from keras.optimizers import SGD
 
 
-class Model(object):
+class MDRModel(object):
     """CNN architecture:
        INPUT -> CONV -> RELU -> CONV -> RELU ->
        POOL -> CONV -> POOL -> FC -> RELU -> 5X SOFTMAX
     """
-    def __init__(self, keep_prob):
+    def __init__(self, keep_prob=1.0):
         self.keep_prob = keep_prob
         self.build_model()
     
-    def build_model():
-        input = Input(shape=(196,160,))
+    def build_model(self):
+        input = Input(shape=(160, 196, 3))
         # First convolutional layer
         # 16 filters - size(5x5x3)
         x = Conv2D(filters=16, kernel_size=5, strides=(1, 1), padding='same')(input)
         x = Activation('relu')(x)
         #skipping local response normalization
-        x = (Dropout(self.keep_prob)(x)
-        
+        x = Dropout(self.keep_prob)(x)
+
         # Second convolutional layer
         # 32 filters - size(5x5x16)
         x = Conv2D(filters=32, kernel_size=5, strides=(1, 1), padding='same')(x)
@@ -47,11 +48,15 @@ class Model(object):
         x = Dropout(self.keep_prob)(x)
 
         # Create variables for 5 softmax classifiers
-        d1 = Dense(11, activation='relu')(x)
-        d2 = Dense(11, activation='relu')(x)
-        d3 = Dense(11, activation='relu')(x)
-        d4 = Dense(11, activation='relu')(x)
+        self.d1 = Dense(11, activation='sigmoid', kernel_initializer='glorot_uniform')(x)
+        self.d2 = Dense(11, activation='sigmoid', kernel_initializer='glorot_uniform')(x)
+        self.d3 = Dense(11, activation='sigmoid', kernel_initializer='glorot_uniform')(x)
+        self.d4 = Dense(11, activation='sigmoid', kernel_initializer='glorot_uniform')(x)
+        
+        #sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+        self.model = Model(inputs=input, outputs=[self.d1, self.d2, self.d3, self.d4])
+        self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['categorical_accuracy'])
 
-        self.model = Model(inputs=input, outputs=[d1, d2, d3, d4])
-
+    def custom_loss(self):
+        pass
 
